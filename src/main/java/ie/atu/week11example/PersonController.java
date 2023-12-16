@@ -29,9 +29,46 @@ public class PersonController {
         return ResponseEntity.ok(person);
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> getPersonByName(@PathVariable String name) {
+        if (name.isBlank()) {
+            return ResponseEntity.badRequest().body("Name is invalid");
+        }
+
+        Person person = personService.getPersonByName(name);
+
+        if (person == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(person);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> getPersonByEmail(@PathVariable String email) {
+        if (email.isBlank()) {
+            return ResponseEntity.badRequest().body("Email is invalid");
+        }
+
+        Person person = personService.getPersonByEmail(email);
+
+        if (person == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(person);
+    }
+
     @PostMapping("/createPerson")
     public ResponseEntity<String>create(@Valid @RequestBody Person person) {
         personService.savePerson(person);
         return new ResponseEntity<>("Person created successfully", HttpStatus.OK);
     }
+
+    @DeleteMapping("/rm/{id}")
+    public ResponseEntity<String> deletePerson(@PathVariable Long id) {
+        personService.deletePerson(id);
+        return new ResponseEntity<>("Person deleted.", HttpStatus.OK);
+    }
+
 }
